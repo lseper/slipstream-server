@@ -11,13 +11,26 @@ datasource db {
 }
 
 model User {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt   DateTime      @default(now())
-  email       String        @unique
-  name        String
-  role        Role          @default(USER)
-  Tournaments Tournament[]
-  Participant Participant[]
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime       @default(now())
+  email         String         @unique
+  name          String
+  password      String
+  role          Role           @default(USER)
+  refreshTokens RefreshToken[]
+  Tournaments   Tournament[]
+  Participant   Participant[]
+}
+
+// auth
+model RefreshToken {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  hashedToken String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String   @db.ObjectId
+  revoked     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Participant {
