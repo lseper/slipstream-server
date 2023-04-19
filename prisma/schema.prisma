@@ -14,19 +14,22 @@ model User {
   id          String        @id @default(auto()) @map("_id") @db.ObjectId
   createdAt   DateTime      @default(now())
   email       String        @unique
-  name        String?
+  name        String
   role        Role          @default(USER)
   Tournaments Tournament[]
   Participant Participant[]
 }
 
 model Participant {
-  id           String      @id @default(auto()) @map("_id") @db.ObjectId
-  user         User        @relation(fields: [userId], references: [id])
-  score        Int         @default(0)
-  userId       String      @db.ObjectId
-  Tournament   Tournament? @relation(fields: [tournamentId], references: [id])
-  tournamentId String?     @db.ObjectId
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  user         User       @relation(fields: [userId], references: [id])
+  score        Int        @default(0)
+  userId       String     @db.ObjectId
+  Tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId String     @db.ObjectId
+  matchups     Matchup[]  @relation(fields: [matchupIds], references: [id])
+  matchupIds   String[]   @db.ObjectId
+  Result       Result[]
 }
 
 model Tournament {
@@ -35,16 +38,50 @@ model Tournament {
   updatedAt               DateTime                @updatedAt
   name                    String
   participants            Participant[]
-  partsPerRound           Int
   racesPerRound           Int
-  currRound               Int
+  partsPerRace            Int
   startTime               DateTime
   setupsCount             Int
   platform                Platform                @default(NONE)
   dlc                     Boolean                 @default(false)
   seedGenerationAlgorithm SeedGenerationAlgorithm @default(CIRCLE)
-  User                    User?                   @relation(fields: [userId], references: [id])
-  userId                  String?                 @db.ObjectId
+  User                    User                    @relation(fields: [userId], references: [id])
+  userId                  String                  @db.ObjectId
+  rounds                  Round[]
+}
+
+model Round {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  matchups     Matchup[]
+  tournamentId String     @db.ObjectId
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+}
+
+model Matchup {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  races          Race[]
+  participants   Participant[] @relation(fields: [participantIds], references: [id])
+  participantIds String[]      @db.ObjectId
+  roundId        String        @db.ObjectId
+  round          Round         @relation(fields: [roundId], references: [id])
+}
+
+model Race {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  matchUpId  String   @db.ObjectId
+  matchUp    Matchup  @relation(fields: [matchUpId], references: [id])
+  courseName String
+  results    Result[]
+}
+
+model Result {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  race          Race        @relation(fields: [raceId], references: [id])
+  participant   Participant @relation(fields: [participantId], references: [id])
+  rank          Int
+  raceId        String      @db.ObjectId
+  participantId String      @db.ObjectId
 }
 
 enum Role {

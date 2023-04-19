@@ -7,10 +7,47 @@ const prisma = new PrismaClient();
 
 const app = express();
 
-console.log(process.env.DATABASE_URL);
-
 // Middleware
 app.use(express.json());
+
+const usersRouter = express.Router();
+app.use('/users', usersRouter);
+
+// Define a route for the '/users' path
+usersRouter.get('/', (req, res) => {
+	res.send('List of users...');
+	// TODO: return users
+});
+
+// Define a dynamic route with a URL parameter on the '/users' path
+usersRouter.get('/:id', (req, res) => {
+	const { id } = req.params;
+	res.send(`User ${id} details...`);
+	// TODO: return specific user
+});
+
+const userTournamentsRouter = express.Router({ mergeParams: true })
+usersRouter.use('/:userId/tournaments', userTournamentsRouter);
+
+userTournamentsRouter.get('/', (req, res) => {
+	res.send('List of tournaments made by user...');
+	// TODO return specific tournaments created by user
+});
+
+
+const tournamentsRouter = express.Router();
+app.use('/tournaments', tournamentsRouter)
+
+tournamentsRouter.get('/', (req, res) => {
+	res.send('List of all tournaments...');
+});
+  
+// Define a dynamic route with a URL parameter on the '/tournaments' path
+tournamentsRouter.get('/:id', (req, res) => {
+	const { id } = req.params;
+	res.send(`Tournament ${id} details...`);
+	// TODO return specific tournament
+});
 
 // Routes
 app.get("/", async (req, res) => {
@@ -23,6 +60,10 @@ app.get("/", async (req, res) => {
 		res.status(500).json({ error: "Failed to fetch users" });
 	}
 });
+
+app.post("/", async (req, res) => {
+
+})
 
 // Initialize MongoDB connection
 async function connectToDatabase() {
