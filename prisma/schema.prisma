@@ -24,7 +24,7 @@ model User {
 
 // auth
 model RefreshToken {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid()) @map("_id")
   hashedToken String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String   @db.ObjectId

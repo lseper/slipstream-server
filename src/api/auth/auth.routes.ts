@@ -21,6 +21,7 @@ const authRouter = Router();
 
 authRouter.post("/register", async (req, res, next) => {
 	try {
+		console.log(req.body)
 		const { email, password, name } = req.body;
 		if (!email || !password) {
 			res.status(400);
@@ -40,6 +41,7 @@ authRouter.post("/register", async (req, res, next) => {
 			name,
 			role: Role.Enum.USER,
 		});
+		// for some reason "-" isn't allowed in the
 		const jti = v4();
 		const { accessToken, refreshToken } = generateTokens(user, jti);
 		await addRefreshTokenToWhitelist({

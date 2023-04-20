@@ -9,6 +9,8 @@ usersRouter.get("/profile", isAuthenticated, async (req, res, next) => {
 	try {
 		// @ts-ignore - angry as it can't tell that .payload is added to req object by isAuthenticated middleware
 		const { userId } = req.payload;
+		// @ts-ignore
+		console.log(req.payload)
 		const user = await findUserById(userId);
 		if (!user) {
 			res.status(404);

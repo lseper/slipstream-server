@@ -14,12 +14,14 @@ export function isAuthenticated(
 
 	if (!authorization) {
 		res.status(401);
-		throw new Error("🚫 Un-Authorized 🚫");
+		throw new Error("No Authorization provided");
 	}
 
 	try {
 		const token = authorization.split(" ")[1];
+		console.log(token);
 		const payload = verify(token, process.env.JWT_ACCESS_SECRET!);
+		console.log(payload)
 		if (typeof payload === "string") {
 			throw new Error("Error decoding token with secret :(");
 		}
