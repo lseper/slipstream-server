@@ -4,7 +4,9 @@
   "description": "server for slipstream",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "dev": "npx ts-node src/server.ts",
+    "migrate": "npx prisma generate"
   },
   "repository": {
     "type": "git",
